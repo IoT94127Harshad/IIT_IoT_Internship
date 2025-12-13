@@ -1,3 +1,5 @@
+#    5. Write a function to print a given number in binary format.
+
 def print_binary(n):
     print(bin(n)[2:])
 
