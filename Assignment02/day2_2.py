@@ -1,3 +1,7 @@
+#    2. Write a program to accept 5 digit number and check whether it is a numeric palindrome. (if reversed
+#       number is same as entered number it is called as palindrome)
+
+
 num = int(input("Enter 5 digit number: "))
 
 temp = num
