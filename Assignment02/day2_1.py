@@ -1,3 +1,7 @@
+#   1. Write a program to accept two numbers and display division of the two numbers. Check divide by zero
+#      error. If divider is zero then display appropriate error message.
+
+
 num1=float(input("Enter first number : "))
 num2=float(input("Enter second number : "))
 

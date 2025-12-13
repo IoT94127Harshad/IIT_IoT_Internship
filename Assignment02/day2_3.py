@@ -1,3 +1,6 @@
+#   3. Write a function to print given number of terms of Fibonacci series.
+
+
 def fibonacci(n):
     a, b = 0, 1
     for i in range(n):
