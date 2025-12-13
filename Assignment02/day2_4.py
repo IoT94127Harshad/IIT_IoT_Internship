@@ -1,3 +1,4 @@
+#    4. Write a function to check number is prime or not and print prime numbers in the given range
 def prime(num):
     if num <= 1:
         return False
