@@ -1,18 +1,24 @@
-CREATE DATABASE iot_data;
-USE iot_data;
+Step 01:-
+	  CREATE DATABASE iot_data;
 
-CREATE TABLE sensor_readings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    temperature FLOAT,
-    humidity FLOAT,
-    timestamp DATETIME
-);
+Step 02:-
+	  USE iot_data;
 
-INSERT INTO sensor_readings (temperature, humidity, timestamp)
-VALUES
-(25.5, 60.2, '2025-12-16 10:00:00'),
-(22.3, 55.8, '2025-12-16 11:00:00'),
-(30.1, 70.5, '2025-12-16 12:00:00'),
-(18.9, 45.0, '2025-12-16 13:00:00');
+Step 03:-
+	  CREATE TABLE sensor_readings (
+  	  id INT AUTO_INCREMENT PRIMARY KEY,
+  	  temperature FLOAT,
+  	  humidity FLOAT,
+  	  timestamp DATETIME
+	  );
 
-SELECT * FROM sensor_readings WHERE temperature < 25;
+Step 04:-
+	  INSERT INTO sensor_readings (temperature, humidity, timestamp)
+	  VALUES
+	  (25.5, 60.2, '2025-12-16 10:00:00'),
+	  (22.3, 55.8, '2025-12-16 11:00:00'),
+	  (30.1, 70.5, '2025-12-16 12:00:00'),
+	  (18.9, 45.0, '2025-12-16 13:00:00');
+
+Step 05:-
+	  SELECT * FROM sensor_readings WHERE temperature < 25;
