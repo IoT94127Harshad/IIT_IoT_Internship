@@ -17,10 +17,10 @@ humidity = input("Enter new humidity : ")
 
 query = f"update sensor_readings SET humidity = '{humidity}' where id = {id};"
 
-id = input("Enter id whose temperature to be updated : ")
-temperature = input("Enter new temperature : ")
+#id = input("Enter id whose temperature to be updated : ")
+#temperature = input("Enter new temperature : ")
 
-query = f"update sensor_readings SET temperature = '{temperature}' where id = {id};"
+#query = f"update sensor_readings SET temperature = '{temperature}' where id = {id};"
 # create a cursor to execute a query
 cursor = connection.cursor()
 
