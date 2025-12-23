@@ -1,51 +1,68 @@
 import paho.mqtt.client as mqtt
+import mysql.connector
 
-BROKER = "broker.hivemq.com"
-PORT = 1883
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="root",
+    database="healthcare"
+)
+cursor = db.cursor()
 
-TEMP_THRESHOLD = 32
-HUM_THRESHOLD = 65
-
-# ---------------- CALLBACKS ---------------- #
-
-def on_connect(client, userdata, flags, rc, properties=None):
-    print("Connected to MQTT Broker")
-    # 🔴 IMPORTANT: use UNIQUE topics
-    client.subscribe("harshad/sensor/temperature")
-    client.subscribe("harshad/sensor/humidity")
+pulse = None
+spo2 = None
 
 def on_message(client, userdata, msg):
-    # Safe decode (prevents UnicodeDecodeError)
-    payload = msg.payload.decode("utf-8", errors="ignore").strip()
+    global pulse, spo2
 
-    if payload == "":
-        return  # ignore empty/binary messages
+    value = int(msg.payload.decode())
 
-    try:
-        value = float(payload)
-    except ValueError:
-        print(f"Ignored non-numeric message: {payload}")
-        return
+    if msg.topic == "health/pulse":
+        pulse = value
+        print("Pulse:", pulse)
 
-    if msg.topic == "harshad/sensor/temperature":
-        print(f"Temperature: {value} °C")
-        if value > TEMP_THRESHOLD:
-            print("⚠ ALERT: High Temperature")
+    elif msg.topic == "health/spo2":
+        spo2 = value
+        print("SpO2:", spo2)
 
-    elif msg.topic == "harshad/sensor/humidity":
-        print(f"Humidity: {value} %")
-        if value > HUM_THRESHOLD:
-            print("⚠ ALERT: High Humidity")
+    if pulse is not None and spo2 is not None:
+        # Store data
+        cursor.execute(
+            "INSERT INTO patient_data (pulse, spo2) VALUES (%s, %s)",
+            (pulse, spo2)
+        )
+        db.commit()
 
-# ---------------- CLIENT SETUP ---------------- #
+        # Check thresholds
+        if pulse < 60 or pulse > 100:
+            alert_msg = f"ALERT: Abnormal Pulse = {pulse} BPM"
+            send_alert(alert_msg)
 
-client = mqtt.Client(
-    client_id="Harshad_Subscriber",
-    callback_api_version=mqtt.CallbackAPIVersion.VERSION2
-)
+        if spo2 < 95:
+            alert_msg = f"ALERT: Low SpO2 Level = {spo2}%"
+            send_alert(alert_msg)
 
-client.on_connect = on_connect
+        pulse = None
+        spo2 = None
+
+def send_alert(message):
+    print(message)
+
+    cursor.execute(
+        "INSERT INTO alerts (message) VALUES (%s)",
+        (message,)
+    )
+    db.commit()
+
+    client.publish("health/alert", message)
+
+client = mqtt.Client()
+client.connect("localhost", 1883, 60)
+
+client.subscribe("health/pulse")
+client.subscribe("health/spo2")
+
 client.on_message = on_message
 
-client.connect(BROKER, PORT, 60)
+print("Healthcare Monitoring Subscriber Started...")
 client.loop_forever()
