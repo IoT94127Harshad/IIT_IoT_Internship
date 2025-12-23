@@ -1,0 +1,16 @@
+#define MQ2_PIN 35
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int gasValue = analogRead(MQ2_PIN);
+  Serial.print("Gas Value: ");
+  Serial.println(gasValue);
+
+  if (gasValue > 2000) {
+    Serial.println("Gas Detected!");
+  }
+  delay(1000);
+}
